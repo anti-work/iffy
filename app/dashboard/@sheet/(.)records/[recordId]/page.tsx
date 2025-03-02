@@ -37,7 +37,7 @@ export default async function Page({ params }: { params: Promise<{ recordId: str
   const id = (await params).recordId;
   return (
     <RouterSheet title="Record">
-      <RecordDetail clerkOrganizationId={orgId} id={id} />
+      <RecordDetail clerkOrganizationId={orgId} id={id} isModal={true} />
     </RouterSheet>
   );
 }
