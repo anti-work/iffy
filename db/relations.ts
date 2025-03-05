@@ -48,9 +48,18 @@ export const userActionsRelations = relations(userActions, ({ one, many }) => ({
     references: [users.id],
   }),
   messages: many(messages),
-  appeal: one(appeals),
+  appeal: one(appeals, { fields: [userActions.id], references: [appeals.userActionId] }),
+  viaRecord: one(records, {
+    fields: [userActions.viaRecordId],
+    references: [records.id],
+    relationName: "viaRecord",
+  }),
+  viaAppeal: one(appeals, {
+    fields: [userActions.viaAppealId],
+    references: [appeals.id],
+    relationName: "viaAppeal",
+  }),
 }));
-
 export const usersRelations = relations(users, ({ many }) => ({
   actions: many(userActions),
   from: many(messages, { relationName: "from" }),
@@ -84,6 +93,7 @@ export const appealsRelations = relations(appeals, ({ one, many }) => ({
   userAction: one(userActions, {
     fields: [appeals.userActionId],
     references: [userActions.id],
+    relationName: "fromUserAction",
   }),
   actions: many(appealActions),
 }));
