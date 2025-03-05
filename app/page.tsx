@@ -15,6 +15,10 @@ import { IffyImage } from "./iffy-image";
 import { CountLazy } from "./count-lazy";
 import AntiworkFooter from "@/components/antiwork-footer";
 import { DashboardTabs } from "@/components/dashboard-tabs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { isIffyCloud } from "@/lib/env";
+import { signupEnabled } from "@/flags";
 
 const getCount = cache(
   async () => {
@@ -47,7 +51,15 @@ const getCount = cache(
 
 export default async function Page() {
   const { count, countAt, ratePerHour } = await getCount();
+  const { userId } = await auth();
 
+  if (!isIffyCloud) {
+    if (userId) {
+      return redirect("/dashboard");
+    } else {
+      return redirect("/sign-in");
+    }
+  }
   return (
     <div className="min-h-screen space-y-12 bg-white pt-6 font-sans text-black sm:space-y-24 sm:pt-12">
       <main className="container mx-auto space-y-12">
@@ -62,6 +74,11 @@ export default async function Page() {
             <Button asChild variant="outline" size="sm">
               <Link href="/sign-in">Sign in</Link>
             </Button>
+            {(await signupEnabled()) && (
+              <Button asChild variant="outline" size="sm">
+                <Link href="/sign-up">Sign up</Link>
+              </Button>
+            )}
           </div>
         </div>
         <div className="space-y-12 sm:space-y-24">
