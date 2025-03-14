@@ -1,4 +1,4 @@
-import { findOrCreateOrganizationSettings } from "@/services/organization-settings";
+import { findOrCreateOrganization } from "@/services/organizations";
 import { Settings } from "./settings";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -15,11 +15,11 @@ export default async function SettingsPage() {
     redirect("/");
   }
 
-  const organizationSettings = await findOrCreateOrganizationSettings(orgId);
+  const organization = await findOrCreateOrganization(orgId);
 
   return (
     <div className="px-12 py-8">
-      <Settings organizationSettings={organizationSettings} />
+      <Settings organization={organization} />
     </div>
   );
 }
